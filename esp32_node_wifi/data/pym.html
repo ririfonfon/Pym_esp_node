@@ -19,10 +19,8 @@
             <div class="slider-group">
                 <div class="slider-box">
                     <div class="num-wrapper">
-                        <input id="cc1" type="number" placeholder="0" min="0" max="15" step="1" oninput="prepareVar1(); ">
-                    </div>
-                    <div class="slider-title">
-                        <p style="color:#ffffff">NET</p>
+                        <input id="cc1" type="number" placeholder="0" min="0" max="32767" step="1" oninput="prepareVar1(); ">
+                        <label>Artnet Univerese 0-32767</label>
                     </div>
                 </div>
             </div>
@@ -32,36 +30,33 @@
             <div class="slider-group">
                 <div class="slider-box">
                     <div class="num-wrapper">
-                        <input id="cc2" type="number" placeholder="0" min="0" max="15" step="1" oninput="prepareVar2(); ">
-                    </div>
-                    <div class="slider-title">
-                        <p style="color:#ffffff">SUBNET</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="slider-title">
-            <div class="slider-group">
-                <div class="slider-box">
-                    <div class="num-wrapper">
-                        <input id="cc3" type="number" placeholder="1" min="0" max="2147483" step="1" oninput="prepareVar3()">
-                    </div>
-                    <div class="slider-title">
-                        <p style="color:#ffffff">DECAY Sec</p>
+                        <input id="cc2" type="number" placeholder="2" min="2" max="10" step="1" oninput="prepareVar2(); ">
+                        <input id="cc3" type="number" placeholder="0" min="0" max="255" step="1" oninput="prepareVar3(); ">
+                        <input id="cc4" type="number" placeholder="0" min="0" max="255" step="1" oninput="prepareVar4(); ">
+                        <input id="cc5" type="number" placeholder="1" min="1" max="254" step="1" oninput="prepareVar5(); ">
+                        <label>IP</label>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="slider-title">
-            <div class="slider-group">
-                <div class="slider-box">
-                    <div class="num-wrapper">
-                        <input id="cc4" type="number" placeholder="1" min="0" max="2147483" step="1" oninput="prepareVar4()">
+            <div class="ssid-group">
+                <div class="ssid-box">
+                    <div class="text-input">
+                        <input id="ssid" type="text" placeholder="ssid" oninput="prepareText1()">
+                        <label>SSID</label>
                     </div>
-                    <div class="slider-title">
-                        <p style="color:#ffffff">ON TIME Sec</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="slider-title">
+            <div class="pass-group">
+                <div class="pass-box">
+                    <div class="text-input">
+                        <input id="pass" type="text" placeholder="Pasword" oninput="prepareText2()">
+                        <label>Password</label>
                     </div>
                 </div>
             </div>
