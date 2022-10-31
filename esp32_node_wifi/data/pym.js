@@ -56,9 +56,13 @@ function connect() {
 
             if (e.data.charAt(1) == 'f') {
                 var data = e.data.split(':');
-                document.getElementById('cc6').value = data[1];
-            } //if e
+                document.getElementById('ssid').value = data[1];
+            } //if f
 
+            if (e.data.charAt(1) == 'g') {
+                var data = e.data.split(':');
+                document.getElementById('pass').value = data[1];
+            } //if g
 
 
         } //if b
@@ -91,7 +95,7 @@ values = new Array(id_array.length);
 ////////////////////////////////////////////////////////////////prepare
 
 function prepareVar1() {
-    var a = parseInt(document.getElementById('cc1').value).toString(8);
+    var a = parseInt(document.getElementById('cc1').value).toString(10);
     if (a.length < 2) { a = '0' + a; }
     values = a;
     var data = "ba" + values;
@@ -135,15 +139,23 @@ function prepareVar5() {
     connection.send(data);
 } //prepare 5
 
-function prepareVar6() {
-    var a = parseInt(document.getElementById('cc6').value).toString(8);
+function prepareText1() {
+    var a = document.getElementById('ssid').value;
     if (a.length < 2) { a = '0' + a; }
     values = a;
     var data = "bf" + values;
     console.log('iData: ' + data);
     connection.send(data);
-} //prepare 6
+} //prepare text 1
 
+function prepareText2() {
+    var a = document.getElementById('pass').value;
+    if (a.length < 2) { a = '0' + a; }
+    values = a;
+    var data = "bg" + values;
+    console.log('iData: ' + data);
+    connection.send(data);
+} //prepare text 2
 
 function submitVal(name, val) {
     var xhttp = new XMLHttpRequest();
@@ -169,34 +181,34 @@ function handle_M_B_S(e) {
     submitVal(name, val);
 } //handle_M_B_S
 
-function rgbToHsl(r, g, b) {
-    console.log('rgbToHsl(r, g, b)');
-    r = r / 255;
-    g = g / 255;
-    b = b / 255;
-    var max = Math.max(r, g, b);
-    var min = Math.min(r, g, b);
-    var h, s, l = (max + min) / 2;
-    if (max == min) {
-        h = s = 0;
-    } else {
-        var d = max - min;
-        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-        switch (max) {
-            case r:
-                h = (g - b) / d + (g < b ? 6 : 0);
-                break;
-            case g:
-                h = (b - r) / d + 2;
-                break;
-            case b:
-                h = (r - g) / d + 4;
-                break;
-        }
-        h = h / 6;
-    }
-    return [h, s, l];
-}
+// function rgbToHsl(r, g, b) {
+//     console.log('rgbToHsl(r, g, b)');
+//     r = r / 255;
+//     g = g / 255;
+//     b = b / 255;
+//     var max = Math.max(r, g, b);
+//     var min = Math.min(r, g, b);
+//     var h, s, l = (max + min) / 2;
+//     if (max == min) {
+//         h = s = 0;
+//     } else {
+//         var d = max - min;
+//         s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+//         switch (max) {
+//             case r:
+//                 h = (g - b) / d + (g < b ? 6 : 0);
+//                 break;
+//             case g:
+//                 h = (b - r) / d + 2;
+//                 break;
+//             case b:
+//                 h = (r - g) / d + 4;
+//                 break;
+//         }
+//         h = h / 6;
+//     }
+//     return [h, s, l];
+// }
 
 function setup() {
     console.log('setup()');
@@ -210,27 +222,27 @@ function setup() {
     submitVal("mem", 0);
 }
 
-function RGBToHex(r, g, b) {
-    if (r.length == 0) r = "00"
-    if (g.length == 0) g = "00"
-    if (b.length == 0) b = "00"
+// function RGBToHex(r, g, b) {
+//     if (r.length == 0) r = "00"
+//     if (g.length == 0) g = "00"
+//     if (b.length == 0) b = "00"
 
-    r = parseInt(r).toString(16);
-    g = parseInt(g).toString(16);
-    b = parseInt(b).toString(16);
+//     r = parseInt(r).toString(16);
+//     g = parseInt(g).toString(16);
+//     b = parseInt(b).toString(16);
 
-    if (r.length == 1) r = "0" + r;
-    if (g.length == 1) g = "0" + g;
-    if (b.length == 1) b = "0" + b;
+//     if (r.length == 1) r = "0" + r;
+//     if (g.length == 1) g = "0" + g;
+//     if (b.length == 1) b = "0" + b;
 
-    return "#" + r + g + b;
-}
+//     return "#" + r + g + b;
+// }
 
-function hexToRGB(hex) {
-    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result ? {
-        r: parseInt(result[1], 16),
-        g: parseInt(result[2], 16),
-        b: parseInt(result[3], 16)
-    } : null;
-}
+// function hexToRGB(hex) {
+//     var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+//     return result ? {
+//         r: parseInt(result[1], 16),
+//         g: parseInt(result[2], 16),
+//         b: parseInt(result[3], 16)
+//     } : null;
+// }
