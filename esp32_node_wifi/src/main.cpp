@@ -8,8 +8,40 @@
 
 #include <ArtnetWifi.h>
 #include <Arduino.h>
+
+#include <WiFi.h>
+#include <WiFiAP.h>
+
+#include <WebSocketsServer.h>
+#include <WebServer.h>
+#include <ESPmDNS.h>
+#include <SPIFFS.h>
+
+#include <EEPROM.h>
+#define EEPROM_SIZE 64
+
 #include <LXESP32DMX.h>
 #include "esp_task_wdt.h"
+
+int clientn = 0;
+
+WebServer server(80);
+WebSocketsServer webSocket = WebSocketsServer(81);
+
+// Artnet settings
+uint16_t universe_choose = 0;
+
+// Wifi settings
+const char *ssid = "riri_new";
+const char *password = "B2az41opbn6397";
+uint8_t setip1,setip2,setip3,setip4;
+
+#include <fonction_web_socket.h>
+
+const char *host = "esp";
+
+#include "srv_handle.h"
+#include <fonction_spiffs.h>
 
 struct Led
 {
@@ -25,16 +57,6 @@ struct Led
 };
 Led onboard_led = {2, false};
 
-// Artnet settings
-
-uint16_t universe_choose = 0;
-
-// Wifi settings
-// const char *ssid = "ssid";
-// const char *password = "pAsSwOrD";
-
-const char *ssid = "riri_new";
-const char *password = "B2az41opbn6397";
 
 WiFiUDP UdpSend;
 ArtnetWifi artnet;
@@ -70,8 +92,8 @@ bool ConnectWifi(void)
   {
     ESP_LOGD("", "");
     ESP_LOGD("", "Connected to : %s", ssid);
-    ESP_LOGD("","STA IP: %u.%u.%u.%u",
-            Ip[0], Ip[1], Ip[2], Ip[3]);
+    ESP_LOGD("", "STA IP: %u.%u.%u.%u",
+             Ip[0], Ip[1], Ip[2], Ip[3]);
   }
   else
   {
@@ -84,12 +106,12 @@ bool ConnectWifi(void)
 
 void onDmxFrame(uint16_t universe, uint16_t length, uint8_t sequence, uint8_t *data)
 {
-    ESP_LOGD("", "DMX: Univ: %x , Seq: %x , Data (%x): ", universe, sequence, length);
+  // ESP_LOGD("", "DMX: Univ: %x , Seq: %x , Data (%x): ", universe, sequence, length);
   if (universe == universe_choose)
   {
     // send out the buffer
     xSemaphoreTake(ESP32DMX.lxDataLock, portMAX_DELAY);
-    for (int i = 0; i < 511; i++)
+    for (int i = 0; i < length; i++)
     {
       ESP32DMX.setSlot(i + 1, data[i]);
     }
@@ -120,6 +142,71 @@ void setup()
   // this will be called for each packet received
   artnet.setArtDmxCallback(onDmxFrame);
   artnet.begin();
+
+  //////////////////////////////////////////////////// SPIFFS
+  SPIFFS.begin();
+  listDir(SPIFFS, "/", 0);
+
+  //////////////////////////////////////////////////// SERVER INIT
+  // list directory
+  server.on("/list", HTTP_GET, handleFileList);
+  // load editor
+  server.on("/edit", HTTP_GET, []()
+            {
+    if (!handleFileRead("/edit.html"))
+      server.send(404, "text/plain", "FileNotFound"); });
+  // create file
+  server.on("/edit", HTTP_PUT, handleFileCreate);
+  // delete file
+  server.on("/edit", HTTP_DELETE, handleFileDelete);
+  // first callback is called after the request has ended with all parsed arguments
+  // second callback handles file uploads at that location
+  server.on(
+      "/edit", HTTP_POST, []()
+      { server.send(200, "text/plain", ""); },
+      handleFileUpload);
+
+  // called when the url is not defined here
+  // use it to load content from SPIFFS
+  server.onNotFound([]()
+                    {
+    if (!handleFileRead(server.uri()))
+      server.send(404, "text/plain", "FileNotFound"); }); // server.onNotFound
+
+  // start webSocket server
+  webSocket.begin();
+  webSocket.onEvent(webSocketEvent);
+  webSocket.enableHeartbeat(15000, 3000, 2);
+
+  if (MDNS.begin(host))
+  {
+#ifdef DEBUG
+    Serial.println("MDNS responder started");
+#endif
+  }
+
+  // handle index
+#ifdef DEBUG
+  Serial.println("HTTP server setup");
+#endif
+
+  // Serveur
+  server.on("/set", srv_handle_set);
+  server.serveStatic("/", SPIFFS, "/pym.html");
+  server.serveStatic("/pym.js", SPIFFS, "/pym.js");
+  server.serveStatic("/pym.css", SPIFFS, "/pym.css");
+  server.serveStatic("/favicon.ico", SPIFFS, "/favicon.ico");
+  server.begin();
+
+  MDNS.addService("http", "tcp", 80);
+  MDNS.addService("ws", "tcp", 81);
+
+  //////////////////////////////////////////////////// EEPROM
+  init_eeprom();
+  eeprom_read();
+
+  WiFi.setAutoReconnect(true);
+  WiFi.persistent(true);
 }
 
 void loop()
