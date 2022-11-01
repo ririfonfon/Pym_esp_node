@@ -23,7 +23,10 @@
 #include <LXESP32DMX.h>
 #include "esp_task_wdt.h"
 
+
 int clientn = 0;
+#define MAX_CLIENT 6
+bool list[MAX_CLIENT] = {false, false, false, false, false, false}; // client
 
 WebServer server(80);
 WebSocketsServer webSocket = WebSocketsServer(81);
@@ -32,8 +35,8 @@ WebSocketsServer webSocket = WebSocketsServer(81);
 uint16_t universe_choose = 0;
 
 // Wifi settings
-const char *ssid = "riri_new";
-const char *password = "B2az41opbn6397";
+char *ssid = "riri_new";
+char *password = "B2az41opbn6397";
 uint8_t setip1,setip2,setip3,setip4;
 
 #include <fonction_web_socket.h>
