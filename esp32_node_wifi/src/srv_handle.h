@@ -4,142 +4,139 @@
 #include <EEPROM.h>
 #define EEPROM_SIZE 64
 
+void writeStringToEEPROM(int addrOffset, String &strToWrite)
+{
+  byte len = strToWrite.length();
+  EEPROM.write(addrOffset, len);
+  for (int i = 0; i < len; i++)
+  {
+    EEPROM.write(addrOffset + 1 + i, strToWrite[i]);
+  }
+}
+String readStringFromEEPROM(int addrOffset)
+{
+  int newStrLen = EEPROM.read(addrOffset);
+  char data[newStrLen + 1];
+  for (int i = 0; i < newStrLen; i++)
+  {
+    data[i] = EEPROM.read(addrOffset + 1 + i);
+  }
+  data[newStrLen] = '\ 0'; // !!! NOTE !!! Remove the space between the slash "/" and "0" (I've added a space because otherwise there is a display bug)
+  return String(data);
+}
+
 void eeprom_read()
 {
-//     FOR_PWM_CHANNELS = EEPROM.read(1);
+    universe_choose = EEPROM.read(1);
+    universe_choose |= (EEPROM.read(4) << 24);
+    universe_choose |= (EEPROM.read(2) << 8);
+    universe_choose |= (EEPROM.read(3) << 16);
 
-//     fade_in = EEPROM.read(2);
-//     fade_in |= (EEPROM.read(3) << 8);
-//     fade_in |= (EEPROM.read(4) << 16);
-//     fade_in |= (EEPROM.read(5) << 24);
+    setip1 = EEPROM.read(5);
+    setip2 = EEPROM.read(6);
+    setip3 = EEPROM.read(7);
+    setip4 = EEPROM.read(8);
 
-//     decalage = EEPROM.read(6);
-//     decalage |= (EEPROM.read(7) << 8);
-//     decalage |= (EEPROM.read(8) << 16);
-//     decalage |= (EEPROM.read(9) << 24);
+    String v_ssid = readStringFromEEPROM(9);
 
-//     on = EEPROM.read(10);
-//     on |= (EEPROM.read(11) << 8);
-//     on |= (EEPROM.read(12) << 16);
-//     on |= (EEPROM.read(13) << 24);
+    String v_password = readStringFromEEPROM(40);
 
-//     off = EEPROM.read(14);
-//     off |= (EEPROM.read(15) << 8);
-//     off |= (EEPROM.read(16) << 16);
-//     off |= (EEPROM.read(17) << 24);
+    *ssid = char(v_ssid.c_str());
+    *password = char(v_password.c_str());
 
-//     fade_out = EEPROM.read(18);
-//     fade_out |= (EEPROM.read(19) << 8);
-//     fade_out |= (EEPROM.read(20) << 16);
-//     fade_out |= (EEPROM.read(21) << 24);
-
-// #ifdef DEBUG
-//     Serial.println("EEPROM READ");
-//     Serial.print(" FOR_PWM_CHANNELS : ");
-//     Serial.print(FOR_PWM_CHANNELS);
-//     Serial.print(" ");
-//     Serial.print(" fade_in : ");
-//     Serial.print(fade_in);
-//     Serial.print(" ");
-//     Serial.print(" decalage : ");
-//     Serial.print(decalage);
-//     Serial.print(" ");
-//     Serial.print(" on : ");
-//     Serial.print(on);
-//     Serial.print(" ");
-//     Serial.print(" off : ");
-//     Serial.print(off);
-//     Serial.print(" fade_out : ");
-//     Serial.print(fade_out);
-//     Serial.println(" ");
-// #endif
+#ifdef DEBUG
+    Serial.println("EEPROM READ");
+    Serial.print(" universe_chosse : ");
+    Serial.print(universe_choose);
+    Serial.print(" ");
+    Serial.print(" set ip : ");
+    Serial.print(setip1);
+    Serial.print(".");
+    Serial.print(setip2);
+    Serial.print(".");
+    Serial.print(setip3);
+    Serial.print(".");
+    Serial.print(setip4);
+    Serial.println(" ");
+    Serial.print(" ssid : ");
+    Serial.print(ssid);
+    Serial.println(" ");
+    Serial.print(" password : ");
+    Serial.print(password);
+    Serial.println(" ");
+#endif
 } //eeprom_read
 
 void eeprom_write()
 {
-//     EEPROM.write(1, FOR_PWM_CHANNELS);
+    EEPROM.write(1, universe_choose);
+    EEPROM.write(2, universe_choose >> 8);
+    EEPROM.write(3, universe_choose >> 16);
+    EEPROM.write(4, universe_choose >> 24);
 
-//     EEPROM.write(2, fade_in);
-//     EEPROM.write(3, fade_in >> 8);
-//     EEPROM.write(4, fade_in >> 16);
-//     EEPROM.write(5, fade_in >> 24);
+    EEPROM.write(5, setip1);
+    EEPROM.write(6, setip2);
+    EEPROM.write(7, setip3);
+    EEPROM.write(8, setip4);
 
-//     EEPROM.write(6, decalage);
-//     EEPROM.write(7, decalage >> 8);
-//     EEPROM.write(8, decalage >> 16);
-//     EEPROM.write(9, decalage >> 24);
+    String ssi = String(ssid);
+    String pass = String(password);
 
-//     EEPROM.write(10, on);
-//     EEPROM.write(11, on >> 8);
-//     EEPROM.write(12, on >> 16);
-//     EEPROM.write(13, on >> 24);
+    writeStringToEEPROM(9,ssi);
 
-//     EEPROM.write(14, off);
-//     EEPROM.write(15, off >> 8);
-//     EEPROM.write(16, off >> 16);
-//     EEPROM.write(17, off >> 24);
+    writeStringToEEPROM(40,pass);
 
-//     EEPROM.write(18, fade_out);
-//     EEPROM.write(19, fade_out >> 8);
-//     EEPROM.write(20, fade_out >> 16);
-//     EEPROM.write(21, fade_out >> 24);
+    EEPROM.write(62, 'O');
+    EEPROM.write(63, 'K');
+    EEPROM.commit();
 
-//     EEPROM.write(62, 'O');
-//     EEPROM.write(63, 'K');
-//     EEPROM.commit();
-
-// #ifdef DEBUG
-//     Serial.println("EEPROM WRITE");
-//     Serial.print(" FOR_PWM_CHANNELS : ");
-//     Serial.print(FOR_PWM_CHANNELS);
-//     Serial.print(" ");
-//     Serial.print(" fade_in : ");
-//     Serial.print(fade_in);
-//     Serial.print(" ");
-//     Serial.print(" decalage : ");
-//     Serial.print(decalage);
-//     Serial.print(" ");
-//     Serial.print(" on : ");
-//     Serial.print(on);
-//     Serial.print(" ");
-//     Serial.print(" off : ");
-//     Serial.print(off);
-//     Serial.print(" fade_out : ");
-//     Serial.print(fade_out);
-//     Serial.println(" ");
-
-// #endif
+#ifdef DEBUG
+    Serial.println("EEPROM WRITE");
+    Serial.print(" universe_chosse : ");
+    Serial.print(universe_choose);
+    Serial.print(" ");
+    Serial.print(" set ip : ");
+    Serial.print(setip1);
+    Serial.print(".");
+    Serial.print(setip2);
+    Serial.print(".");
+    Serial.print(setip3);
+    Serial.print(".");
+    Serial.print(setip4);
+    Serial.println(" ");
+    Serial.print(" ssid : ");
+    Serial.print(ssid);
+    Serial.println(" ");
+    Serial.print(" password : ");
+    Serial.print(password);
+    Serial.println(" ");
+#endif
 } //eeprom_write
 
 void load_spec()
 {
-    // eeprom_read();
-    // for (int i = 0; i < MAX_CLIENT; i++)
-    // {
-    //     if (list[i])
-    //     {
-    //         webSocket.sendTXT(i, "ba:" + String(lround(FOR_PWM_CHANNELS)));
-    //         webSocket.sendTXT(i, "bb:" + String(lround(fade_in)));
-    //         webSocket.sendTXT(i, "bc:" + String(lround(decalage/1000)));
+    eeprom_read();
+    for (int i = 0; i < MAX_CLIENT; i++)
+    {
+        if (list[i])
+        {
+            webSocket.sendTXT(i, "ba:" + String(lround(universe_choose)));
+            webSocket.sendTXT(i, "bb:" + String(lround(setip1)));
+            webSocket.sendTXT(i, "bc:" + String(lround(setip2)));
 
-    //         webSocket.sendTXT(i, "bd:" + String(lround(on/1000)));
-    //         webSocket.sendTXT(i, "be:" + String(lround(off/1000)));
-    //         webSocket.sendTXT(i, "bf:" + String(lround(fade_out)));
-    //     }
+            webSocket.sendTXT(i, "bd:" + String(lround(setip3)));
+            webSocket.sendTXT(i, "be:" + String(lround(setip4)));
+            webSocket.sendTXT(i, "bf:" + String(ssid));
+            webSocket.sendTXT(i, "bg:" + String(password));
+        }
 
-    // } // for client
+    } // for client
 
 } //load_spec
 
 void save_spec()
 {
-    // eeprom_write();
-
-    // btn = false;
-    // start = true;
-    // WiFi.mode(WIFI_OFF);
-    // cycle = true;
-    // // pwm_loop();
+     eeprom_write();
 } //save_spec
 
 void init_eeprom()
