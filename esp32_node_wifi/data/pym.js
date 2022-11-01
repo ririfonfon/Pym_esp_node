@@ -95,7 +95,7 @@ values = new Array(id_array.length);
 ////////////////////////////////////////////////////////////////prepare
 
 function prepareVar1() {
-    var a = parseInt(document.getElementById('cc1').value).toString(10);
+    var a = parseInt(document.getElementById('cc1').value).toString(8);
     if (a.length < 2) { a = '0' + a; }
     values = a;
     var data = "ba" + values;
@@ -140,7 +140,7 @@ function prepareVar5() {
 } //prepare 5
 
 function prepareText1() {
-    var a = document.getElementById('ssid').value;
+    var a = parseInt(document.getElementById('ssid').value).toString(8);
     if (a.length < 2) { a = '0' + a; }
     values = a;
     var data = "bf" + values;
@@ -149,7 +149,7 @@ function prepareText1() {
 } //prepare text 1
 
 function prepareText2() {
-    var a = document.getElementById('pass').value;
+    var a = parseInt(document.getElementById('pass').value).toString(8);
     if (a.length < 2) { a = '0' + a; }
     values = a;
     var data = "bg" + values;
