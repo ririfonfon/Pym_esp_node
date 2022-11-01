@@ -10,6 +10,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
     {
     case WStype_DISCONNECTED:
         clientn -= 1;
+        list[num] = false;
 
 #ifdef DEBUG
         Serial.print(" nombre de clients : ");
@@ -20,6 +21,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
     case WStype_CONNECTED:
     {
         clientn += 1;
+        list[num] = true;
 
 #ifdef DEBUG
         Serial.print(" nombre de clients : ");
@@ -46,7 +48,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
                 Serial.print(" universe_choose : ");
                 Serial.print(universe_choose);
 #endif
-            } //a
+            } // a
             else if (payload[1] == 'b')
             {
                 char *pEnd;
@@ -55,7 +57,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
                 Serial.print(" setip1 : ");
                 Serial.print(setip1);
 #endif
-            } //b
+            } // b
             else if (payload[1] == 'c')
             {
                 char *pEnd;
@@ -64,7 +66,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
                 Serial.print(" setip2 : ");
                 Serial.print(setip2);
 #endif
-            } //c
+            } // c
             else if (payload[1] == 'd')
             {
                 char *pEnd;
@@ -73,7 +75,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
                 Serial.print(" setip3 : ");
                 Serial.print(setip3);
 #endif
-            } //d
+            } // d
             else if (payload[1] == 'e')
             {
                 char *pEnd;
@@ -82,22 +84,31 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
                 Serial.print(" setip4 : ");
                 Serial.print(setip4);
 #endif
-            } //e
+            } // e
             else if (payload[1] == 'f')
             {
                 char *pEnd;
-                // ssid = (&payload[2], &pEnd) ;
+                *ssid = char(strtol((const char *)&payload[2], &pEnd, 8));
 #ifdef DEBUG
                 Serial.print(" ssid : ");
                 Serial.print(ssid);
 #endif
-            } //f
+            } // f
+            else if (payload[1] == 'g')
+            {
+                char *pEnd;
+                *password = char(strtol((const char *)&payload[2], &pEnd, 8));
+#ifdef DEBUG
+                Serial.print(" password : ");
+                Serial.print(password);
+#endif
+            } // g
 
-        } //payload[0] == b
+        } // payload[0] == b
 
-    } //WStype_TEXT:
+    } // WStype_TEXT:
     break;
-    } //type
-} //web socket
+    } // type
+} // web socket
 
 #endif
