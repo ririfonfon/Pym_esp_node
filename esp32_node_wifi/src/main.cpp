@@ -17,6 +17,7 @@
 #include <dmx.h>
 #include <wifi_serv_setup.h>
 #include <led.h>
+#include <btn.h>
 
 void setup()
 {
@@ -26,10 +27,11 @@ void setup()
 #endif
 
   EEPROM.begin(EEPROM_SIZE);
+  init_eeprom();
 
   init_led();
   init_dmx();
-  init_wifi();
+  ConnectWifi();
   init_artnet();
 
 #ifdef DEBUG
@@ -39,8 +41,13 @@ void setup()
 
 void loop()
 {
-  onboard_led.on = millis() % 2000 < 1000;
-  onboard_led.update();
+  if (btn == false)
+  {
+    onboard_led.on = millis() % 2000 < 1000;
+    onboard_led.update();
+  }
 
   artnet.read();
+
+  check_btn();
 }
