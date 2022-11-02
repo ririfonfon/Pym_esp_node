@@ -29,7 +29,6 @@ bool ConnectWifi(void)
     int i = 0;
 
     //////////////////////////////////////////////////// EEPROM
-    init_eeprom();
     eeprom_read();
 
     IPAddress Ip(setip1, setip2, setip3, setip4);
@@ -37,15 +36,20 @@ bool ConnectWifi(void)
     WiFi.config(Ip, Ip, NMask);
 
     WiFi.begin(ssid, password);
-    ESP_LOGD("", "");
-    ESP_LOGD("", "Connecting to WiFi");
+#ifdef DEBUG
+    Serial.println("Connecting to WiFi");
+#endif
 
-    // Wait for connection
-    ESP_LOGD("", "Connecting");
+// Wait for connection
+#ifdef DEBUG
+    Serial.println("Connecting");
+#endif
     while (WiFi.status() != WL_CONNECTED)
     {
         delay(500);
-        ESP_LOGD("", ".");
+#ifdef DEBUG
+        Serial.print(".");
+#endif
         if (i > 20)
         {
             state = false;
@@ -55,24 +59,37 @@ bool ConnectWifi(void)
     }
     if (state)
     {
-        ESP_LOGD("", "");
-        ESP_LOGD("", "Connected to : %s", ssid);
-        ESP_LOGD("", "STA IP: %u.%u.%u.%u",
-                 Ip[0], Ip[1], Ip[2], Ip[3]);
+#ifdef DEBUG
+        Serial.println("");
+        Serial.printf("Connected to : %s", ssid);
+        Serial.println("");
+        Serial.printf("STA IP: %u.%u.%u.%u",
+                      Ip[0], Ip[1], Ip[2], Ip[3]);
+        Serial.println("");
+        WiFi.setAutoReconnect(true);
+        WiFi.persistent(true);
+#endif
     }
     else
     {
-        ESP_LOGD("", "");
-        ESP_LOGD("", "Connection failed.");
+#ifdef DEBUG
+        Serial.println("Connection failed.");
+#endif
     }
 
     return state;
 }
 
-//////////////////////////////////////////init_wifi////////////////////////////////////////
-void init_wifi()
+//////////////////////////////////////////serveur////////////////////////////////////////
+void close_serv()
 {
-    ConnectWifi();
+    SPIFFS.end();
+    server.close();
+    webSocket.close();
+    MDNS.end();
+}
+void init_serv()
+{
     //////////////////////////////////////////////////// SPIFFS
     SPIFFS.begin();
     listDir(SPIFFS, "/", 0);
@@ -130,9 +147,6 @@ void init_wifi()
 
     MDNS.addService("http", "tcp", 80);
     MDNS.addService("ws", "tcp", 81);
-
-    WiFi.setAutoReconnect(true);
-    WiFi.persistent(true);
 
 } // init_wifi
 
