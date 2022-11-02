@@ -18,7 +18,7 @@ String readStringFromEEPROM(int addrOffset)
     {
         data[i] = EEPROM.read(addrOffset + 1 + i);
     }
-    data[newStrLen] = '\ 0'; // !!! NOTE !!! Remove the space between the slash "/" and "0" (I've added a space because otherwise there is a display bug)
+    data[newStrLen] = '\0';
     return String(data);
 }
 
@@ -60,6 +60,12 @@ void eeprom_read()
     Serial.println(" ");
     Serial.print(" password : ");
     Serial.print(password);
+    Serial.println(" ");
+    Serial.print(" v_ssid : ");
+    Serial.print(v_ssid);
+    Serial.println(" ");
+    Serial.print(" v_password : ");
+    Serial.print(v_password);
     Serial.println(" ");
 #endif
 } // eeprom_read
