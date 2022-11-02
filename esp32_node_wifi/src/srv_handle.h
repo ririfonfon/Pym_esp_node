@@ -43,7 +43,7 @@ void eeprom_read()
 
 #ifdef DEBUG
     Serial.println("EEPROM READ");
-    Serial.print(" universe_chosse : ");
+    Serial.print(" universe_choose : ");
     Serial.print(universe_choose);
     Serial.print(" ");
     Serial.print(" set ip : ");
@@ -89,7 +89,7 @@ void eeprom_write()
 
 #ifdef DEBUG
     Serial.println("EEPROM WRITE");
-    Serial.print(" universe_chosse : ");
+    Serial.print(" universe_choose : ");
     Serial.print(universe_choose);
     Serial.print(" ");
     Serial.print(" set ip : ");
@@ -117,6 +117,9 @@ void load_spec()
     {
         if (list[i])
         {
+#ifdef DEBUG
+            Serial.println("load spec send");
+#endif
             webSocket.sendTXT(i, "ba:" + String(lround(universe_choose)));
             webSocket.sendTXT(i, "bb:" + String(lround(setip1)));
             webSocket.sendTXT(i, "bc:" + String(lround(setip2)));
@@ -138,20 +141,19 @@ void save_spec()
 
 void init_eeprom()
 {
-    if (EEPROM.read(EEPROM_SIZE - 2) != 'O' || EEPROM.read(EEPROM_SIZE-1) != 'K')
+#ifdef DEBUG
+    Serial.printf("eeprom read %d : %c", EEPROM_SIZE - 2, EEPROM.read(EEPROM_SIZE - 2));
+    Serial.println("");
+    Serial.printf("eeprom read %d : %c", EEPROM_SIZE - 1, EEPROM.read(EEPROM_SIZE - 1));
+    Serial.println("");
+#endif
+
+    if (EEPROM.read(EEPROM_SIZE - 2) != 'O' || EEPROM.read(EEPROM_SIZE - 1) != 'K')
     {
 
 #ifdef DEBUG
         Serial.println("failed to initialise EEPROM");
-        Serial.print("eeprom read ");
-        Serial.print(EEPROM_SIZE - 2);
-        Serial.print(" : ");
-        Serial.println(EEPROM.read(EEPROM_SIZE - 2));
-        Serial.print("eeprom read ");
-        Serial.print(EEPROM_SIZE - 1);
-        Serial.print(" : ");
-        Serial.println(EEPROM.read(EEPROM_SIZE - 1));
-        Serial.print("Formate EEPROM");
+        Serial.println("Formate EEPROM");
 #endif
 
         for (int i = 0; i < EEPROM_SIZE; i++)
