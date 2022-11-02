@@ -15,6 +15,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 #ifdef DEBUG
         Serial.print(" nombre de clients : ");
         Serial.print(clientn);
+        Serial.printf(" [%u] Disconnected \n", num);
 #endif
         break;
 
@@ -42,6 +43,32 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
 #endif
             if (payload[1] == 'a')
             {
+#ifdef DEBUG
+                Serial.println("payload[0] == 'a'");
+                for (int i = 0; i < MAX_CLIENT; i++)
+                {
+                    Serial.print("i : ");
+                    Serial.print(i);
+
+                    if (i != num)
+                    {
+                        Serial.print("    num : ");
+                        Serial.print(num);
+                        Serial.print("   !=   ");
+                        Serial.print("  list[i] : ");
+                        Serial.println(list[i]);
+                    } // if (i != num) {
+                    else
+                    {
+                        Serial.print("    num : ");
+                        Serial.print(num);
+                        Serial.print("   ======   ");
+                        Serial.print("  list[i] : ");
+                        Serial.println(list[i]);
+                    }
+
+                } // for (int i = 0; i < MAX_CLIENT; i++)
+#endif
                 char *pEnd;
                 universe_choose = strtol((const char *)&payload[2], &pEnd, 8);
 #ifdef DEBUG
