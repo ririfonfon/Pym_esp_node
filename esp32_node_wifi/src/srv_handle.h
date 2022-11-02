@@ -1,36 +1,33 @@
 #ifndef srv_handle_h
 #define srv_handle_h
 
-#include <EEPROM.h>
-#define EEPROM_SIZE 64
-
 void writeStringToEEPROM(int addrOffset, String &strToWrite)
 {
-  byte len = strToWrite.length();
-  EEPROM.write(addrOffset, len);
-  for (int i = 0; i < len; i++)
-  {
-    EEPROM.write(addrOffset + 1 + i, strToWrite[i]);
-  }
+    byte len = strToWrite.length();
+    EEPROM.write(addrOffset, len);
+    for (int i = 0; i < len; i++)
+    {
+        EEPROM.write(addrOffset + 1 + i, strToWrite[i]);
+    }
 }
 String readStringFromEEPROM(int addrOffset)
 {
-  int newStrLen = EEPROM.read(addrOffset);
-  char data[newStrLen + 1];
-  for (int i = 0; i < newStrLen; i++)
-  {
-    data[i] = EEPROM.read(addrOffset + 1 + i);
-  }
-  data[newStrLen] = '\ 0'; // !!! NOTE !!! Remove the space between the slash "/" and "0" (I've added a space because otherwise there is a display bug)
-  return String(data);
+    int newStrLen = EEPROM.read(addrOffset);
+    char data[newStrLen + 1];
+    for (int i = 0; i < newStrLen; i++)
+    {
+        data[i] = EEPROM.read(addrOffset + 1 + i);
+    }
+    data[newStrLen] = '\ 0'; // !!! NOTE !!! Remove the space between the slash "/" and "0" (I've added a space because otherwise there is a display bug)
+    return String(data);
 }
 
 void eeprom_read()
 {
     universe_choose = EEPROM.read(1);
-    universe_choose |= (EEPROM.read(4) << 24);
     universe_choose |= (EEPROM.read(2) << 8);
     universe_choose |= (EEPROM.read(3) << 16);
+    universe_choose |= (EEPROM.read(4) << 24);
 
     setip1 = EEPROM.read(5);
     setip2 = EEPROM.read(6);
@@ -41,8 +38,8 @@ void eeprom_read()
 
     String v_password = readStringFromEEPROM(40);
 
-    *ssid = char(v_ssid.c_str());
-    *password = char(v_password.c_str());
+    // *ssid = char(v_ssid.c_str());
+    // *password = char(v_password.c_str());
 
 #ifdef DEBUG
     Serial.println("EEPROM READ");
@@ -65,7 +62,7 @@ void eeprom_read()
     Serial.print(password);
     Serial.println(" ");
 #endif
-} //eeprom_read
+} // eeprom_read
 
 void eeprom_write()
 {
@@ -82,12 +79,12 @@ void eeprom_write()
     String ssi = String(ssid);
     String pass = String(password);
 
-    writeStringToEEPROM(9,ssi);
+    writeStringToEEPROM(9, ssi);
 
-    writeStringToEEPROM(40,pass);
+    writeStringToEEPROM(40, pass);
 
-    EEPROM.write(62, 'O');
-    EEPROM.write(63, 'K');
+    EEPROM.write(EEPROM_SIZE - 2, 'O');
+    EEPROM.write(EEPROM_SIZE - 1, 'K');
     EEPROM.commit();
 
 #ifdef DEBUG
@@ -111,7 +108,7 @@ void eeprom_write()
     Serial.print(password);
     Serial.println(" ");
 #endif
-} //eeprom_write
+} // eeprom_write
 
 void load_spec()
 {
@@ -132,21 +129,29 @@ void load_spec()
 
     } // for client
 
-} //load_spec
+} // load_spec
 
 void save_spec()
 {
-     eeprom_write();
-} //save_spec
+    eeprom_write();
+} // save_spec
 
 void init_eeprom()
 {
-    if (EEPROM.read(62) != 'O' || EEPROM.read(63) != 'K')
+    if (EEPROM.read(EEPROM_SIZE - 2) != 'O' || EEPROM.read(EEPROM_SIZE-1) != 'K')
     {
 
 #ifdef DEBUG
         Serial.println("failed to initialise EEPROM");
-        Serial.println("Formate EEPROM");
+        Serial.print("eeprom read ");
+        Serial.print(EEPROM_SIZE - 2);
+        Serial.print(" : ");
+        Serial.println(EEPROM.read(EEPROM_SIZE - 2));
+        Serial.print("eeprom read ");
+        Serial.print(EEPROM_SIZE - 1);
+        Serial.print(" : ");
+        Serial.println(EEPROM.read(EEPROM_SIZE - 1));
+        Serial.print("Formate EEPROM");
 #endif
 
         for (int i = 0; i < EEPROM_SIZE; i++)
@@ -155,6 +160,7 @@ void init_eeprom()
             if (i % 50 == 0)
                 delay(100);
         }
+        EEPROM.commit();
 #ifdef DEBUG
         Serial.println("EEPROM content cleared!");
 #endif
@@ -163,11 +169,14 @@ void init_eeprom()
 
     } //(EEPROM.read(62) != 'O' || EEPROM.read(63) != 'K')
 
-    if (EEPROM.read(62) == 'O' && EEPROM.read(63) == 'K')
+    if (EEPROM.read(EEPROM_SIZE - 2) == 'O' && EEPROM.read(EEPROM_SIZE - 1) == 'K')
     {
+#ifdef DEBUG
+        Serial.println("read OK OK OK");
+#endif
         eeprom_read();
     } //(EEPROM.read(62) == 'O' && EEPROM.read(63) == 'K')
-} //init_eeprom()
+} // init_eeprom()
 
 //////////////////////////////////////////srv_handle_set////////////////////////////////////////
 void srv_handle_set()
@@ -187,16 +196,16 @@ void srv_handle_set()
             if (LMem == 0)
             {
                 load_spec();
-            } //if(Mem==0){
+            } // if(Mem==0){
 
             if (LMem == 1)
             {
                 save_spec();
-            } //if(Mem==1){
-        }     //serveur mem
+            } // if(Mem==1){
+        }     // serveur mem
 
-    } //serveur args
+    } // serveur args
     server.send(200, "text/plain", "OK");
-} //srv_handle_set()
+} // srv_handle_set()
 
 #endif
