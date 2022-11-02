@@ -2,7 +2,7 @@
 //////////////////////////////////////////spiffs///////////////////////////////////////////////
 File fsUploadFile;
 
-//format bytes
+// format bytes
 String formatBytes(size_t bytes)
 {
     if (bytes < 1024)
@@ -21,7 +21,7 @@ String formatBytes(size_t bytes)
     {
         return String(bytes / 1024.0 / 1024.0 / 1024.0) + "GB";
     }
-} //formatBytes(size_t bytes)
+} // formatBytes(size_t bytes)
 
 String getContentType(String filename)
 {
@@ -52,13 +52,13 @@ String getContentType(String filename)
     else if (filename.endsWith(".gz"))
         return "application/x-gzip";
     return "text/plain";
-} //getContentType(String filename)
+} // getContentType(String filename)
 
 bool handleFileRead(String path)
 {
- #ifdef DEBUG
+#ifdef DEBUG
     Serial.println("handleFileRead: " + path);
- #endif
+#endif
     if (path.endsWith("/"))
         path += "index.htm";
     String contentType = getContentType(path);
@@ -73,7 +73,7 @@ bool handleFileRead(String path)
         return true;
     }
     return false;
-} //handleFileRead(String path)
+} // handleFileRead(String path)
 
 void handleFileUpload()
 {
@@ -94,7 +94,7 @@ void handleFileUpload()
     }
     else if (upload.status == UPLOAD_FILE_WRITE)
     {
-        //DBG_OUTPUT_PORT.print("handleFileUpload Data: "); DBG_OUTPUT_PORT.println(upload.currentSize);
+        // DBG_OUTPUT_PORT.print("handleFileUpload Data: "); DBG_OUTPUT_PORT.println(upload.currentSize);
         if (fsUploadFile)
             fsUploadFile.write(upload.buf, upload.currentSize);
     }
@@ -107,7 +107,7 @@ void handleFileUpload()
         Serial.println(upload.totalSize);
 #endif
     }
-} //handleFileUpload()
+} // handleFileUpload()
 
 void handleFileDelete()
 {
@@ -124,7 +124,7 @@ void handleFileDelete()
     SPIFFS.remove(path);
     server.send(200, "text/plain", "");
     path = String();
-} //handleFileDelete()
+} // handleFileDelete()
 
 void handleFileCreate()
 {
@@ -145,7 +145,7 @@ void handleFileCreate()
         return server.send(500, "text/plain", "CREATE FAILED");
     server.send(200, "text/plain", "");
     path = String();
-} //handleFileCreate()
+} // handleFileCreate()
 
 void handleFileList()
 {
@@ -156,29 +156,30 @@ void handleFileList()
     }
 
     String path = server.arg("dir");
- #ifdef DEBUG
+#ifdef DEBUG
     Serial.println("handleFileList: " + path);
- #endif
+#endif
     File dir = SPIFFS.open(path);
     path = String();
 
-    if(!dir.isDirectory())
+    if (!dir.isDirectory())
     {
-    dir.close();
-    server.send(500, "text/plain", "NOT DIR");
+        dir.close();
+        server.send(500, "text/plain", "NOT DIR");
         return;
-   }
-  dir.rewindDirectory();
+    }
+    dir.rewindDirectory();
 
     String output = "[";
-   
-   for (int cnt = 0; true; ++cnt) {
-    File entry = dir.openNextFile();
-    if (!entry)
-    break;
 
-    if (cnt > 0)
-      output += ',';
+    for (int cnt = 0; true; ++cnt)
+    {
+        File entry = dir.openNextFile();
+        if (!entry)
+            break;
+
+        if (cnt > 0)
+            output += ',';
 
         output += "{\"type\":\"";
         output += (entry.isDirectory()) ? "dir" : "file";
@@ -190,18 +191,21 @@ void handleFileList()
 
     output += "]";
     server.send(200, "text/json", output);
-} //handleFileList()
+} // handleFileList()
 
-void listDir(fs::FS &fs, const char * dirname, uint8_t levels) {
-  Serial.printf("Listing directory: %s\n", dirname);
+void listDir(fs::FS &fs, const char *dirname, uint8_t levels)
+{
+    Serial.printf("Listing directory: %s\n", dirname);
 
-  File root = fs.open(dirname);
-  if (!root) {
-      Serial.println("Failed to open directory");
-    return;
-  }
-  if (!root.isDirectory()) {
-      Serial.println("Not a directory");
-    return;
-  }
+    File root = fs.open(dirname);
+    if (!root)
+    {
+        Serial.println("Failed to open directory");
+        return;
+    }
+    if (!root.isDirectory())
+    {
+        Serial.println("Not a directory");
+        return;
+    }
 }
