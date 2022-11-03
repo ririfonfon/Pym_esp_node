@@ -140,19 +140,13 @@ function prepareVar5() {
 } //prepare 5
 
 function prepareText1() {
-    var a = parseInt(document.getElementById('ssid').value).toString(8);
-    if (a.length < 2) { a = '0' + a; }
-    values = a;
-    var data = "bf" + values;
+    var data = "bf" + document.getElementById('ssid').value;
     console.log('iData: ' + data);
     connection.send(data);
 } //prepare text 1
 
 function prepareText2() {
-    var a = parseInt(document.getElementById('pass').value).toString(8);
-    if (a.length < 2) { a = '0' + a; }
-    values = a;
-    var data = "bg" + values;
+    var data = "bg" + document.getElementById('pass').value;
     console.log('iData: ' + data);
     connection.send(data);
 } //prepare text 2
