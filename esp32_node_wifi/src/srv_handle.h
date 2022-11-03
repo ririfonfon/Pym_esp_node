@@ -35,11 +35,10 @@ void eeprom_read()
     setip4 = EEPROM.read(8);
 
     String v_ssid = readStringFromEEPROM(9);
-
     String v_password = readStringFromEEPROM(40);
 
-    // *ssid = char(v_ssid.c_str());
-    // *password = char(v_password.c_str());
+    strcpy(ssid, v_ssid.c_str());
+    strcpy(password, v_password.c_str());
 
 #ifdef DEBUG
     Serial.println("EEPROM READ");
@@ -61,11 +60,11 @@ void eeprom_read()
     Serial.print(" password : ");
     Serial.print(password);
     Serial.println(" ");
-    Serial.print(" v_ssid : ");
-    Serial.print(v_ssid);
+    Serial.print(" ssid : ");
+    Serial.print(ssid);
     Serial.println(" ");
-    Serial.print(" v_password : ");
-    Serial.print(v_password);
+    Serial.print(" password : ");
+    Serial.print(password);
     Serial.println(" ");
 #endif
 } // eeprom_read

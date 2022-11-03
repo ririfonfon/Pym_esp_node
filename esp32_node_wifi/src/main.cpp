@@ -26,9 +26,15 @@ void setup()
   Serial.println("setup");
 #endif
 
+  // Default values (Before EEPROM read)
+  strcpy(ssid, "riri_new");
+  strcpy(password, "B2az41opbn6397"); 
+
+  // EEPROM read  
   EEPROM.begin(EEPROM_SIZE);
   init_eeprom();
 
+  // INIT
   init_led();
   init_dmx();
   ConnectWifi();

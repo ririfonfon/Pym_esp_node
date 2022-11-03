@@ -4,8 +4,8 @@
 // WiFi network settings
 
 const char *host = "esp";
-char *ssid = "riri_new";
-char *password = "B2az41opbn6397";
+char ssid[32];      
+char password[32]; 
 
 int clientn = 0;
 #define MAX_CLIENT 6
