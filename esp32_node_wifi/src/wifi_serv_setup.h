@@ -66,9 +66,9 @@ bool ConnectWifi(void)
         Serial.printf("STA IP: %u.%u.%u.%u",
                       Ip[0], Ip[1], Ip[2], Ip[3]);
         Serial.println("");
+#endif
         WiFi.setAutoReconnect(true);
         WiFi.persistent(true);
-#endif
     }
     else
     {
