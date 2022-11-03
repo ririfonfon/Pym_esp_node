@@ -114,8 +114,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
             } // e
             else if (payload[1] == 'f')
             {
-                char *pEnd;
-                *ssid = char(strtol((const char *)&payload[2], &pEnd, 8));
+                strncpy(ssid, (const char *)&payload[2], 32);
 #ifdef DEBUG
                 Serial.print(" ssid : ");
                 Serial.print(ssid);
@@ -123,8 +122,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t lenght)
             } // f
             else if (payload[1] == 'g')
             {
-                char *pEnd;
-                *password = char(strtol((const char *)&payload[2], &pEnd, 8));
+                strncpy(password, (const char *)&payload[2], 32);
 #ifdef DEBUG
                 Serial.print(" password : ");
                 Serial.print(password);
