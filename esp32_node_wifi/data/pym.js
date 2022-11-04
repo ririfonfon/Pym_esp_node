@@ -4,6 +4,10 @@ var connection;
 
 function connect() {
     console.log('connect()');
+    {
+            ("#lbueno").css({"background":" #0F0"}); //green
+		    ("#lbueno").css({ "box-shadow": "0 -0px 100px #060, inset #0F0 0 -1px 20px, #0F2 0 3px 11px"});// 0 -1px 6px 20px
+    }
     connection = new WebSocket('ws://' + location.hostname + ':81/', ['arduino']);
 
     connection.onopen = function() {
@@ -71,6 +75,10 @@ function connect() {
 
     connection.onclose = function(e) {
         console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
+        {
+            $("#lbueno").css({"background":"#0F0"});
+            $("#lbueno").css({ "box-shadow": "#000 0 -1px 6px 1px, inset #060 0 -1px 20px, #0F0 0 3px 11px"});
+        }
         connection.close();
         setTimeout(function() {
             connect();
@@ -175,35 +183,6 @@ function handle_M_B_S(e) {
     submitVal(name, val);
 } //handle_M_B_S
 
-// function rgbToHsl(r, g, b) {
-//     console.log('rgbToHsl(r, g, b)');
-//     r = r / 255;
-//     g = g / 255;
-//     b = b / 255;
-//     var max = Math.max(r, g, b);
-//     var min = Math.min(r, g, b);
-//     var h, s, l = (max + min) / 2;
-//     if (max == min) {
-//         h = s = 0;
-//     } else {
-//         var d = max - min;
-//         s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-//         switch (max) {
-//             case r:
-//                 h = (g - b) / d + (g < b ? 6 : 0);
-//                 break;
-//             case g:
-//                 h = (b - r) / d + 2;
-//                 break;
-//             case b:
-//                 h = (r - g) / d + 4;
-//                 break;
-//         }
-//         h = h / 6;
-//     }
-//     return [h, s, l];
-// }
-
 function setup() {
     console.log('setup()');
     var xhttp = new XMLHttpRequest();
@@ -215,28 +194,3 @@ function setup() {
     });
     submitVal("mem", 0);
 }
-
-// function RGBToHex(r, g, b) {
-//     if (r.length == 0) r = "00"
-//     if (g.length == 0) g = "00"
-//     if (b.length == 0) b = "00"
-
-//     r = parseInt(r).toString(16);
-//     g = parseInt(g).toString(16);
-//     b = parseInt(b).toString(16);
-
-//     if (r.length == 1) r = "0" + r;
-//     if (g.length == 1) g = "0" + g;
-//     if (b.length == 1) b = "0" + b;
-
-//     return "#" + r + g + b;
-// }
-
-// function hexToRGB(hex) {
-//     var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-//     return result ? {
-//         r: parseInt(result[1], 16),
-//         g: parseInt(result[2], 16),
-//         b: parseInt(result[3], 16)
-//     } : null;
-// }
