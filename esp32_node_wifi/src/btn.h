@@ -3,10 +3,11 @@
 
 uint8_t BTN_GPIOPIN = 15;
 const int LONG_PRESS_TIME = 1000;
+const int RESET_PRESS_TIME = 10000;
 unsigned long pressedTime = 0;
 unsigned long releasedTime = 0;
 int lastState = LOW;
-int currentState = 1;
+int currentState;
 bool btn = false;
 bool start = true;
 
@@ -19,17 +20,34 @@ void check_btn()
 {
     currentState = digitalRead(BTN_GPIOPIN);
 
-    if (lastState == HIGH && currentState == LOW) // button is pressed
+    if (lastState == LOW && currentState == HIGH) // button is pressed
     {
         pressedTime = millis();
+        lastState = currentState;
     }
-    else if (lastState == LOW && currentState == HIGH) // button is released
+    else if (lastState == HIGH && currentState == LOW) // button is released
     {
         releasedTime = millis();
 
         long pressDuration = releasedTime - pressedTime;
 
-        if (pressDuration > LONG_PRESS_TIME)
+        if (pressDuration > RESET_PRESS_TIME)
+        {
+            universe_choose = 3;
+            setip1 = 2;
+            setip2 = 0;
+            setip3 = 0;
+            setip4 = 110;
+            strcpy(ssid, "riri_new");
+            strcpy(password, "B2az41opbn6397");
+            eeprom_write();
+
+#ifdef DEBUG
+            Serial.print("RESET_PRESS btn = ");
+            Serial.println(btn);
+#endif
+        }
+        else if (pressDuration > LONG_PRESS_TIME)
         {
 
             if (btn == true)
@@ -43,14 +61,12 @@ void check_btn()
                 close_serv();
             }
 #ifdef DEBUG
-            Serial.print("(btn_State == HIGH) btn = ");
+            Serial.print("LONG_PRESS btn = ");
             Serial.println(btn);
 #endif
         }
+        lastState = currentState;
     }
-
-    // save the the last state
-    lastState = currentState;
 
     if (btn)
     {
