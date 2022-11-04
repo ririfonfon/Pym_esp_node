@@ -4,10 +4,10 @@ var connection;
 
 function connect() {
     console.log('connect()');
-    {
-            ("#lbueno").css({"background":" #0F0"}); //green
-		    ("#lbueno").css({ "box-shadow": "0 -0px 100px #060, inset #0F0 0 -1px 20px, #0F2 0 3px 11px"});// 0 -1px 6px 20px
-    }
+
+    // add active class to element with id lbueno
+    document.getElementById('lbueno').classList.add('active');
+
     connection = new WebSocket('ws://' + location.hostname + ':81/', ['arduino']);
 
     connection.onopen = function() {
@@ -75,10 +75,10 @@ function connect() {
 
     connection.onclose = function(e) {
         console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
-        {
-            $("#lbueno").css({"background":"#0F0"});
-            $("#lbueno").css({ "box-shadow": "#000 0 -1px 6px 1px, inset #060 0 -1px 20px, #0F0 0 3px 11px"});
-        }
+        
+        // remove active class from element with id lbueno
+        document.getElementById('lbueno').classList.remove('active');
+
         connection.close();
         setTimeout(function() {
             connect();
