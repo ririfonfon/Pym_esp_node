@@ -8,9 +8,6 @@ function connect() {
     connection = new WebSocket('ws://' + location.hostname + ':81/', ['arduino']);
     
     
-    connection.onopen = function() {
-        connection.send('Connect ' + new Date());
-    };
     
     connection.onmessage = function(e) {
         console.log('Server: ', e.data);
@@ -19,7 +16,7 @@ function connect() {
             var data = e.data.split(':');
             document.getElementById(data[0]).value = data[1];
         } //if
-
+        
         if (e.data.charAt(0) == 'mem') {
             var val = e.data.split(':')[1];
             var elems = document.querySelectorAll('#mode li a');
@@ -28,7 +25,7 @@ function connect() {
             });
             document.getElementById(val).classList.add('active');
         } //if
-
+        
         if (e.data.charAt(0) == 'b') {
             
             if (e.data.charAt(1) == 'a') {
@@ -40,7 +37,7 @@ function connect() {
                 var data = e.data.split(':');
                 document.getElementById('cc2').value = data[1];
             } //if b
-
+            
             if (e.data.charAt(1) == 'c') {
                 var data = e.data.split(':');
                 document.getElementById('cc3').value = data[1];
@@ -50,7 +47,7 @@ function connect() {
                 var data = e.data.split(':');
                 document.getElementById('cc4').value = data[1];
             } //if d
-
+            
             if (e.data.charAt(1) == 'e') {
                 var data = e.data.split(':');
                 document.getElementById('cc5').value = data[1];
@@ -60,17 +57,24 @@ function connect() {
                 var data = e.data.split(':');
                 document.getElementById('ssid').value = data[1];
             } //if f
-
+            
             if (e.data.charAt(1) == 'g') {
                 var data = e.data.split(':');
                 document.getElementById('pass').value = data[1];
             } //if g
-
+            
             
         } //if b
-
+        
     }; //function (e)
     
+    connection.onopen = function() {
+        connection.send('Connect ' + new Date());
+        
+        // add active class to element with id lbueno
+        document.getElementById('led').classList.add('active');
+    };
+
     connection.onclose = function(e) {
         console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
         
@@ -90,9 +94,7 @@ function connect() {
             connect();
         }, 1000);
     };
-    
-    // add active class to element with id lbueno
-    document.getElementById('led').classList.add('active');
+
 }
 
 connect();
