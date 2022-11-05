@@ -4,19 +4,17 @@ var connection;
 
 function connect() {
     console.log('connect()');
-
-    // add active class to element with id lbueno
-    document.getElementById('lbueno').classList.add('active');
-
+    
     connection = new WebSocket('ws://' + location.hostname + ':81/', ['arduino']);
-
+    
+    
     connection.onopen = function() {
         connection.send('Connect ' + new Date());
     };
-
+    
     connection.onmessage = function(e) {
         console.log('Server: ', e.data);
-
+        
         if (e.data.charAt(0) == 'cc') {
             var data = e.data.split(':');
             document.getElementById(data[0]).value = data[1];
@@ -32,7 +30,7 @@ function connect() {
         } //if
 
         if (e.data.charAt(0) == 'b') {
-
+            
             if (e.data.charAt(1) == 'a') {
                 var data = e.data.split(':');
                 document.getElementById('cc1').value = data[1];
@@ -57,7 +55,7 @@ function connect() {
                 var data = e.data.split(':');
                 document.getElementById('cc5').value = data[1];
             } //if e
-
+            
             if (e.data.charAt(1) == 'f') {
                 var data = e.data.split(':');
                 document.getElementById('ssid').value = data[1];
@@ -68,17 +66,17 @@ function connect() {
                 document.getElementById('pass').value = data[1];
             } //if g
 
-
+            
         } //if b
 
     }; //function (e)
-
+    
     connection.onclose = function(e) {
         console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
         
         // remove active class from element with id lbueno
-        document.getElementById('lbueno').classList.remove('active');
-
+        document.getElementById('led').classList.remove('active');
+        
         connection.close();
         setTimeout(function() {
             connect();
@@ -92,6 +90,9 @@ function connect() {
             connect();
         }, 1000);
     };
+    
+    // add active class to element with id lbueno
+    document.getElementById('led').classList.add('active');
 }
 
 connect();
