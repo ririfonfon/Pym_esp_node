@@ -25,11 +25,12 @@ form {
     height: 30px;
   
     border-radius: 50%;
-	box-shadow: #000 0 -1px 6px 1px, inset #006 0 -1px 20px, rgb(0, 255, 0) 0 3px 11px;   
-	background-color: rgb(75, 75, 75);
+	box-shadow: #000 0 -1px 6px 1px, inset #006 0 -1px 20px, rgb(255, 0, 0) 0 3px 11px;   
+	background-color: rgb(97, 0, 0);
 }
 
 .led-green.active {
+    box-shadow: #000 0 -1px 6px 1px, inset #006 0 -1px 20px, rgb(0, 255, 0) 0 3px 11px;   
 	background-color: rgb(0, 255, 0);
 }
 
