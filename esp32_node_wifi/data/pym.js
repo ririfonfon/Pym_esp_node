@@ -70,16 +70,17 @@ function connect() {
     
     connection.onopen = function() {
         connection.send('Connect ' + new Date());
-        
+
         // add active class to element with id lbueno
         document.getElementById('led').classList.add('active');
-    };
 
+        submitVal("mem", 0);
+    };
+    
     connection.onclose = function(e) {
         console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
         
-        // remove active class from element with id lbueno
-        document.getElementById('led').classList.remove('active');
+        clean_value();
         
         connection.close();
         setTimeout(function() {
@@ -90,6 +91,9 @@ function connect() {
     connection.onerror = function(err) {
         console.error('Socket encountered error: ', err.message, 'Closing socket');
         connection.close();
+        
+        clean_value();
+        
         setTimeout(function() {
             connect();
         }, 1000);
@@ -195,5 +199,16 @@ function setup() {
         // el.addEventListener('touchstart', handle_M_B_S, false);
         el.addEventListener('click', handle_M_B_S, false);
     });
-    submitVal("mem", 0);
+    clean_value();
+}
+
+function clean_value(){
+    document.getElementById('led').classList.remove('active');
+    document.getElementById('cc1').value = '';
+    document.getElementById('cc2').value = '';
+    document.getElementById('cc3').value = '';
+    document.getElementById('cc4').value = '';
+    document.getElementById('cc5').value = '';
+    document.getElementById('ssid').value = '';
+    document.getElementById('pass').value = '';
 }
