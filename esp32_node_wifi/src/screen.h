@@ -46,7 +46,7 @@ void drawWifi()
     display.setFont(ArialMT_Plain_16);
     display.setTextAlignment(TEXT_ALIGN_CENTER);
     display.drawString(64, 0, String(ssid));
-    display.drawString(64, 20, String(Ip[0]) + String('.') + String(Ip[1]) + String('.') + String(Ip[2]) + String('.') + String(Ip[3]));
+    display.drawString(64, 20, String(setip1) + String('.') + String(setip2) + String('.') + String(setip3) + String('.') + String(setip4));
     display.drawString(64, 40, "ArtNet: " + String(universe_choose));
     display.display();
     screen_off = millis();
@@ -95,6 +95,7 @@ void setup_display()
     display.setFont(ArialMT_Plain_16);
     display.setTextAlignment(TEXT_ALIGN_CENTER);
     display.drawString(64, 20, "HTML SETUP");
+    display.drawString(64, 40, String(setip1) + String('.') + String(setip2) + String('.') + String(setip3) + String('.') + String(setip4));
     display.display();
 }
 
