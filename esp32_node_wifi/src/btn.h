@@ -28,17 +28,17 @@ void check_btn()
     }
     if (currentState == HIGH)
     {
-        if (millis() - pressedTime < LONG_PRESS_TIME)
+        if (millis() - pressedTime > RESET_PRESS_TIME)
         {
-            drawWifi();
+            default_released_display();
         }
         else if (millis() - pressedTime > LONG_PRESS_TIME)
         {
             setup_released_display();
         }
-        else if (millis() - pressedTime > RESET_PRESS_TIME)
+        else if (millis() - pressedTime < LONG_PRESS_TIME)
         {
-            default_released_display();
+            drawWifi();
         }
     }
     else if (lastState == HIGH && currentState == LOW) // button is released
@@ -58,6 +58,8 @@ void check_btn()
             strcpy(ssid, "riri_new");
             strcpy(password, "B2az41opbn6397");
             eeprom_write();
+            delay(1000);
+            ESP.restart();
 
 #ifdef DEBUG
             Serial.print("RESET_PRESS btn = ");

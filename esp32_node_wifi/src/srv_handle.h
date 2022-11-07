@@ -142,6 +142,8 @@ void load_spec()
 void save_spec()
 {
     eeprom_write();
+    delay(1000);
+    ESP.restart();
 } // save_spec
 
 void init_eeprom()
