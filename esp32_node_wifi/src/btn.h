@@ -22,8 +22,20 @@ void check_btn()
 
     if (lastState == LOW && currentState == HIGH) // button is pressed
     {
+        check_display();
         pressedTime = millis();
         lastState = currentState;
+    }
+    if (currentState == HIGH)
+    {
+        if (millis() - pressedTime > RESET_PRESS_TIME)
+        {
+            default_released_display();
+        }
+        else if (millis() - pressedTime > LONG_PRESS_TIME)
+        {
+            setup_released_display();
+        }
     }
     else if (lastState == HIGH && currentState == LOW) // button is released
     {
@@ -33,6 +45,7 @@ void check_btn()
 
         if (pressDuration > RESET_PRESS_TIME)
         {
+            default_display();
             universe_choose = 3;
             setip1 = 2;
             setip2 = 0;
@@ -49,7 +62,7 @@ void check_btn()
         }
         else if (pressDuration > LONG_PRESS_TIME)
         {
-
+            setup_released_display();
             if (btn == true)
             {
                 btn = false;
@@ -73,6 +86,7 @@ void check_btn()
         if (start)
         {
             start = false;
+            setup_display();
             init_serv();
         }
         webSocket.loop();
