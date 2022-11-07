@@ -34,6 +34,7 @@ bool ConnectWifi(void)
     IPAddress Ip(setip1, setip2, setip3, setip4);
     IPAddress NMask(255, 0, 0, 0);
     WiFi.config(Ip, Ip, NMask);
+    WiFi.setHostname(host);
 
     WiFi.begin(ssid, password);
 #ifdef DEBUG

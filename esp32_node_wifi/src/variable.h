@@ -3,7 +3,7 @@
 
 // WiFi network settings
 
-const char *host = "esp";
+const char *host = "NODE_1";
 char ssid[32];      
 char password[32]; 
 
