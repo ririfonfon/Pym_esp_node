@@ -28,13 +28,17 @@ void check_btn()
     }
     if (currentState == HIGH)
     {
-        if (millis() - pressedTime > RESET_PRESS_TIME)
+        if (millis() - pressedTime < LONG_PRESS_TIME)
         {
-            default_released_display();
+            drawWifi();
         }
         else if (millis() - pressedTime > LONG_PRESS_TIME)
         {
             setup_released_display();
+        }
+        else if (millis() - pressedTime > RESET_PRESS_TIME)
+        {
+            default_released_display();
         }
     }
     else if (lastState == HIGH && currentState == LOW) // button is released
