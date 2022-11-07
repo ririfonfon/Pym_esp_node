@@ -19,4 +19,6 @@ IPAddress Ip(2, 0, 0, 112);
 
 uint16_t universe_choose = 1;
 
+unsigned long screen_off;
+bool display_off = false; 
 #endif
