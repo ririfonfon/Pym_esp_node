@@ -30,9 +30,7 @@ void setup()
   init_screen();
   drawProgress(10);
 
-  // Default values (Before EEPROM read)
-  strcpy(ssid, "riri_new");
-  strcpy(password, "B2az41opbn6397");
+  init_ssid();
 
   // EEPROM read
   EEPROM.begin(EEPROM_SIZE);
