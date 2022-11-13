@@ -50,13 +50,12 @@ void check_btn()
         if (pressDuration > RESET_PRESS_TIME)
         {
             default_display();
-            universe_choose = 3;
-            setip1 = 2;
-            setip2 = 0;
-            setip3 = 0;
-            setip4 = 110;
-            strcpy(ssid, "riri_new");
-            strcpy(password, "B2az41opbn6397");
+            universe_choose = Runiverse_choose;
+            setip1 = Rsetip1;
+            setip2 = Rsetip2;
+            setip3 = Rsetip3;
+            setip4 = Rsetip4;
+            init_ssid();
             eeprom_write();
             delay(1000);
             ESP.restart();
